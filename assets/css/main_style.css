@@ -28,14 +28,21 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #0b1026;
-    transition: background-color 1s ease-in, opacity 1s ease-in;
+    transition: background-color 1s ease-in, opacity 1s ease-in, scale 1s ease-in;
     overflow: hidden;
     z-index: 99999;
+    display: flex;
+    flex-direction: column;
+}
+
+.preload .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .loaded-info {
-    position: absolute;
-    top: 65%;
+    position: relative;
     width: 80vw;
     color: white;
     text-align: center;
@@ -46,20 +53,6 @@ body {
     transition: all 1s ease-in;
 }
 
-.loaded-info::before {
-    content: '';
-    width: 55%;
-    height: 20%;
-    clip-path: ellipse(50% 25% at 50% 50%);
-    backdrop-filter: blur(5px);
-    background-color: rgba(255, 255, 255, 0.2);
-    left: 50%;
-    top: 28%;
-    transform: translate(-50%);
-    position: absolute;
-    z-index: -1;
-}
-
 .loaded-info h5 {
     text-align: center;
     color: rgba(128, 128, 128, 0.8);
@@ -67,15 +60,14 @@ body {
 }
 
 .loaded {
-    /* transform: translateY(-20%); */
-    margin-bottom: 15%;
+    margin-bottom: 5%;
 }
 
 .logo {
     position: relative;
     display: flex;
     justify-content: center;
-    width: 50%;
+    width: min(80% - 10px, 420px);
     animation: Preload 2s ease-in-out infinite alternate;
     transition: all 0.5s ease-in-out;
     z-index: 1;
@@ -83,8 +75,7 @@ body {
 
 .logo img {
     aspect-ratio: 1 / 1;
-    scale: 0.5;
-    /* box-shadow: inset 100rem 100rem 10rem rgba(255, 255, 255, 0.01), 0 0 1.5rem rgba(255, 255, 255, 0.01); */
+    width: 100%;
     filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.1));
     border-radius: 100%;
     z-index: 1;
@@ -97,7 +88,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     aspect-ratio: 1 / 1;
-    height: 25%;
+    height: 50%;
     border-radius: 100%;
     background-color: red;
     clip-path: polygon(50% 50%, 0% 80%, 0% 100%, 100% 100%, 100% -20%);
@@ -118,6 +109,17 @@ body {
     border: 1rem solid darkred;
     z-index: 0;
     animation: Eyes 1.6s ease-in-out infinite alternate, Blinks 2s ease-in-out infinite alternate;
+}
+
+@media (max-width: 640px) {
+    .loaded {
+        /* transform: translateY(-20%); */
+        margin-bottom: 15%;
+    }
+
+    .redEyes::after {
+        border: 0.5rem solid darkred;
+    }
 }
 
 @keyframes Preload {
@@ -178,6 +180,118 @@ body {
 }
 
 /* ======================================= */
+/* =           Music Player              = */
+/* ======================================= */
+
+.music-player {
+    --mProgress: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: var(--mProgress);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    min-width: 60px;
+    height: 60px;
+    color: white;
+    background-color: darkblue;
+    box-shadow: 0 var(--mProgress) 0 darkblue;
+    z-index: 100;
+}
+
+.music-player::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    width: 60px;
+    height: 60px;
+    background-color: darkblue;
+    box-shadow: 0 20px 0 darkblue;
+    clip-path: polygon(50% 0, 100% 50%, 100% 150%, 0 150%, 0 0);
+    z-index: -1;
+}
+
+.music-album {
+    width: 40px;
+    height: 40px;
+}
+
+.music-album img {
+    width: 100%;
+    filter: drop-shadow(0 0 0.5rem rgba(255, 255, 255, 0.5));
+}
+
+#icon-play {
+    animation: spining 5s linear infinite;
+}
+
+@keyframes spining {
+    0% {
+        rotate: 0deg;
+    }
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.music-info {
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.music-tittle {
+    width: fit-content;
+    height: 50%;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+    border-bottom: 2px solid rgba(128, 128, 128, 0.5);
+    display: flex;
+    align-items: center;
+}
+
+.music-artist{
+    font-size: 0.8rem;
+}
+
+.music-duration {
+    writing-mode: vertical-rl;
+}
+
+.music-progress-wrapper {
+    position: absolute;
+    font-size: 0.8rem;
+    bottom: calc(var(--mProgress)*-1);
+    left: 10px;
+    width: 100vw;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.music-progress {
+    position: absolute;
+    bottom: 10px;
+    left: -10px; 
+    height: calc(var(--mProgress) * 0.25);
+    background-color: white;
+    z-index: -1;
+}
+
+.music-progress img {
+    position: absolute;
+    right: -5px;
+    bottom: -20px;
+    width: 45px;
+    rotate: 45deg;
+}
+
+/* ======================================= */
 /* =              Header                 = */
 /* ======================================= */
 
@@ -194,9 +308,9 @@ body {
     mix-blend-mode: color-burn;
     width: calc(3 * 100vw);
     height: calc(3 * 100vh);
-    left: -150%;
-    top: -150%;
-    /* transform: translate(-50%, -50%); */
+    left: -100%;
+    top: -100%;
+    pointer-events: none;
     animation: headerBg 60s linear 0s infinite ;   
     opacity: 0.5;
 }
@@ -224,6 +338,8 @@ body {
     transform: translate(-50%, -50%);
     border-radius: 50%;
     margin: 50px auto;  
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
 }
 
 .outer-clock-face {

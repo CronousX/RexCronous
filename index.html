@@ -26,6 +26,25 @@
         </div>
     </div> 
 
+    <div class="music-player" id="music-player">
+        <div class="music-duration">{{ timeLeft }}</div>
+        <div class="music-album" @click="play">
+            <div class="icon">
+                <img src="assets/img/disc.svg" v-if="isTimerPlaying" alt="" id="icon-play">
+                <img src="assets/img/disc.svg" v-else alt="">
+            </div>
+        </div>
+        <div class="music-info">
+            <div class="music-tittle" @click="nextTrack">{{ currentTrack.name }}</div>
+            <div class="music-artist">{{ currentTrack.artist }}</div>
+        </div>
+        <div class="music-progress-wrapper">
+            <div class="music-progress" :style="{ width : barWidth }">
+                <img src="assets/img/rocket.png" alt="">
+            </div>
+        </div>
+    </div>
+
     <section class="header" id="tsparticles2">
         <img src="assets/img/header-noise.png" alt="">
         <div class="clock" id="clock">
@@ -47,6 +66,8 @@
 
     <!-- Links : Script -->
     <script src="assets/js/tsparticles.bundle.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+    <script src="assets/js/music.js"></script>
     <script src="assets/js/script.js"></script>
 </body>
 </html>

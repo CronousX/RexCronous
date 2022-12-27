@@ -46,8 +46,8 @@
         "enable": true,
         "mode": "slow",
         "parallax": {
-          "enable": true,
-          "force": 15,
+          "enable": false,
+          "force": 25,
           "smooth": 10
         }
       },
@@ -275,7 +275,7 @@
       },
       "random": false,
       "size": false,
-      "speed": 2,
+      "speed": 0.5,
       "spin": {
         "acceleration": 0,
         "enable": false

@@ -1,5 +1,7 @@
 // Preload
 
+var clock = document.querySelector(".clock");
+
 document.addEventListener('DOMContentLoaded', () => {
   "use strict";
   const preloader = document.querySelector('#preloader');
@@ -12,23 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
       logo.classList.add("loaded");
       logo.nextElementSibling.style.opacity = "1";
       window.scrollTo(0, 0);
-      
 
       preloader.addEventListener('click', () =>{
         preloader.style.backgroundColor = "unset";
         
         tsParticles.loadJSON("tsparticles", "assets/config/particlesEnd.json").then(container => {})
         tsParticles.loadJSON("tsparticles2", "assets/config/particlesHead.json").then(container => {});
+        preloader.style.pointerEvent = "none";
 
         preloader.style.background_color = "unset";
         setTimeout(function() {
+          preloader.style.scale = "1.5";
           preloader.style.opacity = "0";
           setTimeout(function() {
             preloader.style.display = "none";
+            clock.style.opacity = "1";
+            function call( ) {vm.play()}call();
+            console.log('test')
           }, 1000);
         }, 1000);
       })
-    }, 6000);
+    }, 60);
   });
   }
 });
@@ -66,5 +72,4 @@ const hourHand = document.querySelector('.hour-hand');
 
 setInterval(setDate, 1000);
 
-setDate();  
-
+setDate();
