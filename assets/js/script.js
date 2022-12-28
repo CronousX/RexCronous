@@ -73,3 +73,19 @@ const hourHand = document.querySelector('.hour-hand');
 setInterval(setDate, 1000);
 
 setDate();
+
+// Music Player
+
+var musicPlayer = document.querySelector(".music-player");
+var musicPBut = document.querySelector(".music-player-button");
+
+function open() {
+  musicPlayer.classList.toggle("openned");
+}
+
+musicPBut.addEventListener('click', () => {
+  console.log('test 1');
+  open();
+  console.log('test 2')
+})
+
