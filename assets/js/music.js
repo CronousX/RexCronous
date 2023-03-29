@@ -40,6 +40,14 @@ new Vue({
           source: "assets/misc/audio/KICKBACK.mp3",
           url: "https://www.youtube.com/watch?v=z3wAjJXbYzA",
           favorited: false
+        },
+        {
+          name: "Black Catcher",
+          artist: "-",
+          cover: "",
+          source: "assets/misc/audio/KICKBACK.mp3",
+          url: "https://www.youtube.com/watch?v=z3wAjJXbYzA",
+          favorited: false
         }
       ],
       currentTrack: null,

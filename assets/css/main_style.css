@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+section {
+    min-height: 100vh;
+}
+
 body {
     overflow-x: hidden;
 }
@@ -48,7 +52,7 @@ body {
     text-align: center;
     letter-spacing: 5px;
     font-family: 'Secular One', sans-serif;
-    pointer-events: none;
+    /* pointer-events: none; */
     opacity: 0;
     transition: all 1s ease-in;
 }
@@ -125,26 +129,26 @@ body {
 @keyframes Preload {
     0% {
         scale: 1;
-        rotate: 0deg;
+        rotate: 45deg;
     }
     15% {
         scale: 1;
-        rotate: 2deg;
+        rotate: 47deg;
     }
     25%{
         scale: 1.05;
-        rotate: -10deg;
+        rotate: 35deg;
     }
     75%{
-        rotate: 730deg;
+        rotate: 775deg;
         scale: 0.62;
     }
     85%{
-        rotate: 718deg;
+        rotate: 763deg;
         scale: 0.6;
     }
     100% {  
-        rotate: 720deg;
+        rotate: 765deg;
         scale: 0.6;
     }
 }
@@ -205,6 +209,7 @@ body {
 }
 
 .music-player-button {
+    --highlighted: rgba(255, 255, 255, 0.5);
     position: absolute;
     right: -30px;
     bottom: 0;
@@ -213,6 +218,7 @@ body {
     background-color: darkblue;
     box-shadow: 0 20px 0 darkblue;
     clip-path: polygon(50% 0, 100% 50%, 100% 150%, 0 150%, 0 0);
+    transition: all 0.5s ease-in-out;
     z-index: -1;
 }
 
@@ -224,7 +230,12 @@ body {
     width: 5px;
     height: 15px;
     /* background-color: #4d4b63; */
-    border: 5px dotted rgba(77, 75, 99, 0.8);
+    transition: all 0.5s ease-in-out;
+    border: 5px dotted var(--highlighted);
+}
+
+.music-player-button:hover {
+    --highlighted: rgb(255, 255, 255);
 }
 
 .music-player.openned>.music-info {
@@ -273,6 +284,7 @@ body {
     width: fit-content;
     height: 50%;
     width: 100%;
+    letter-spacing: 1px;
     font-size: 1rem;
     font-weight: bold;
     border-bottom: 2px solid rgba(128, 128, 128, 0.5);
@@ -293,7 +305,7 @@ body {
     opacity: 0;
     gap: 5px;
     padding: 10px;
-    background-color: darkblue;
+    /* background-color: darkblue; */
     border-radius: 5px;
     pointer-events: none;
     justify-content: space-between;
@@ -320,6 +332,12 @@ body {
     stroke-width: 0;
     stroke: currentColor;
     fill: currentColor;
+    transition: scale 0.2s ease-in-out;
+    filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.5));
+}
+
+.icon:hover {
+    scale: 1.2;
 }
 
 .love.active {
@@ -364,6 +382,11 @@ body {
     bottom: -12.5px;
     width: 30px;
     rotate: 45deg;
+    transition: scale 0.2s ease-in-out;
+}
+
+.music-progress-wrapper:hover>.music-progress img {
+    scale: 1.2;
 }
 
 /* ======================================= */
@@ -371,11 +394,12 @@ body {
 /* ======================================= */
 
 .header {
-    position: absolute;
-    height: 110vh;
+    position: fixed;
+    height: 100vh;
     width: 100vw;
     background-color: #0b1026;
     overflow: hidden;
+    z-index: -1;
 }
 
 .header img {
@@ -409,10 +433,9 @@ body {
     width: min(50vw, 420px);
     position: absolute;
     left: 50%;
-    top: calc(110vh - 10vh - 50%);
+    top: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    margin: 50px auto;  
     opacity: 0;
     transition: opacity 0.5s ease-in;
 }
@@ -539,3 +562,8 @@ body {
     height: 2px;
 }
   
+.about {
+    position: relative;
+    top: 100vh;
+    background-color: #4d4b63;
+}

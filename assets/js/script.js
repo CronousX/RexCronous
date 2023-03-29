@@ -29,12 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(function() {
             preloader.style.display = "none";
             clock.style.opacity = "1";
-            function call( ) {vm.play()}call();
-            console.log('test')
+            vm.play();
           }, 1000);
         }, 1000);
       })
-    }, 60);
+    }, 2000);
   });
   }
 });
@@ -42,11 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //Particles
 
 tsParticles.loadJSON("tsparticles", "assets/config/particles.json").then(container => {
-  console.log("callback - tsparticles config loaded");
 })
-.catch(error => {
-  console.error(error);
-});
 
 // Clock
 
@@ -84,8 +79,29 @@ function open() {
 }
 
 musicPBut.addEventListener('click', () => {
-  console.log('test 1');
   open();
-  console.log('test 2')
 })
 
+// Random #1
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+document.querySelector("#logo").onmouseover = event => {
+  let iterations = 0;
+
+  const interval = setInterval(() => {
+    event.target.innerText = event.target.innerText.split("")
+    .map((letter, index) => {
+      if (index < iterations) {
+        return event.target.dataset.value[index];
+      }
+
+      return letters[Math.floor(Math.random() * 26)]
+    })
+    .join("");
+
+    if (iterations >= event.target.dataset.value.length) clearInterval(interval);
+
+    iterations += 1 / 3;
+  }, 50);
+}
