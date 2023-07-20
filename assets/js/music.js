@@ -42,10 +42,18 @@ new Vue({
           favorited: false
         },
         {
-          name: "Black Catcher",
-          artist: "-",
+          name: "Jurus Rahasia Teleport",
+          artist: "JKT48",
           cover: "",
-          source: "assets/misc/audio/KICKBACK.mp3",
+          source: "assets/misc/audio/Jurus_Rahasia_Teleport.mp3",
+          url: "https://www.youtube.com/watch?v=z3wAjJXbYzA",
+          favorited: false
+        },
+        {
+          name: "Ponytail dan ShuShu",
+          artist: "JKT48",
+          cover: "",
+          source: "assets/misc/audio/Ponytail_dan_ShuShu.mp3",
           url: "https://www.youtube.com/watch?v=z3wAjJXbYzA",
           favorited: false
         }
