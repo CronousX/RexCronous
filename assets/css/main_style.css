@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 0;
+}
+
 section {
     min-height: 100vh;
 }
