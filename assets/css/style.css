@@ -1,0 +1,615 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    /* Color Palette */
+    --color-special: 92, 0, 184; 
+    --color-prim-dark: 18, 18, 84;
+    --color-prim: 25, 25, 112;
+    --color-prim-light: 40, 40, 184;
+    --color-accent: 245, 208, 0;
+    --color-accent-light: 255, 237, 133;
+    --color-base: 255, 249, 214;
+}
+
+/* Disable Scrollbar */
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+html {
+    scrollbar-width: none;
+}
+
+section {
+    min-height: 100vh;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-wrapper {
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: min(100% - 15px, 840px);
+    height: 100%;
+    margin-inline: auto;
+}
+
+/* ======================================= */
+/* =          Custom Scrollbar           = */
+/* ======================================= */
+
+.scrollbar-track {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.75rem;
+    height: 100%;
+    border-radius: 5px;
+    z-index: 99;
+}
+
+.scrollbar-thumb {
+    position: relative;
+    width: 50%;
+    margin: auto;
+    background-color: rgba(var(--color-accent), 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.scrollbar-thumb.active,
+.scrollbar-thumb:hover {
+    width: 100%;
+    background-color: rgba(var(--color-accent), 0.8);
+}
+
+/* ======================================= */
+/* =             Preloader               = */
+/* ======================================= */
+
+.preload{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    transition: background-color 1s ease-in, opacity 1s ease-in, scale 1s ease-in;
+    overflow: hidden;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}
+
+.preload .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loaded-info {
+    position: relative;
+    width: 80vw;
+    color: rgb(var(--color-base));
+    text-align: center;
+    letter-spacing: 5px;
+    font-family: 'Secular One', sans-serif;
+    opacity: 0;
+    transition: all 1s ease-in;
+}
+
+.loaded-info h5 {
+    text-align: center;
+    color: rgba(128, 128, 128, 0.8);
+    animation: Blinks 1s linear infinite alternate;
+}
+
+.loaded {
+    margin-bottom: 5%;
+}
+
+.logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: min(50% - 10px, 160px);
+    animation: Preload 2s ease-in-out infinite alternate;
+    transition: all 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.logo img {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    filter: drop-shadow(-1px -1px 1px #ffdc73);
+    border-radius: 100%;
+    z-index: 1;
+    -webkit-user-drag: none;
+}
+
+@keyframes Preload {
+    0% {
+        scale: 1;
+        rotate: 45deg;
+    }
+    15% {
+        scale: 1;
+        rotate: 47deg;
+    }
+    25%{
+        scale: 1.05;
+        rotate: 35deg;
+    }
+    75%{
+        rotate: 775deg;
+        scale: 0.62;
+    }
+    85%{
+        rotate: 763deg;
+        scale: 0.6;
+    }
+    100% {  
+        rotate: 765deg;
+        scale: 0.6;
+    }
+}
+
+@keyframes PreloadEnd {
+    0% {
+        rotate: 0deg;
+        scale: 0.95;
+    }
+    100%{
+        rotate: 0deg; 
+        scale: 1;
+    }
+}
+
+#logo {
+    display: flex;
+    justify-content: center;
+}
+
+#logo:before,
+#logo:after {
+    display: block;
+    content: attr(data-content);
+    position: absolute;
+    opacity: 0.8;
+}
+ 
+.glitch:before {
+    animation: glitch-color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    color: var(--color-prim-light);
+    z-index: -1;
+}
+ 
+.glitch:after {
+    animation: glitch-color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+    color: var(--color-accent);
+    z-index: -2;
+}
+ 
+@keyframes glitch-color {
+    0% {
+       transform: translate(0);
+    }
+ 
+    20% {
+       transform: translate(-3px, 3px);
+    }
+ 
+    40% {
+       transform: translate(-3px, -3px);
+    }
+ 
+    60% {
+       transform: translate(3px, 3px);
+    }
+ 
+    80% {
+       transform: translate(3px, -3px);
+    }
+ 
+    to {
+       transform: translate(0);
+    }
+}
+
+/* ======================================= */
+/* =            Starry Sky               = */
+/* ======================================= */
+
+.starrySky {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: #0b1026;
+    user-select: none;
+}
+
+.starrySky img {
+    position: absolute;
+    mix-blend-mode: color-burn;
+    width: calc(3 * 100vw);
+    height: calc(3 * 100vh);
+    left: -100%;
+    top: -100%;
+    pointer-events: none;
+    animation: galaxyNoise 180s linear 0s infinite;   
+    opacity: 0.5;
+}
+
+@keyframes galaxyNoise {
+    0% {
+        rotate: 360deg;
+    }
+    100% {
+        rotate: 0deg;
+    }
+}
+
+/* ======================================= */
+/* =              Header                 = */
+/* ======================================= */
+
+.header {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    z-index: 0;
+}
+
+/* ======================================= */
+/* =             BGM PLayer              = */
+/* ======================================= */
+
+.bgm-player {
+    --bgm-bg-color: var(--color-prim);
+    --bgm-shadow-color: rgba(var(--bgm-bg-color), 0.5);
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3rem;
+    width: fit-content;
+    opacity: 0;
+    filter: drop-shadow(0 0 0.5rem var(--bgm-shadow-color));
+    transition: opacity 2s ease-in;
+    user-select: none;
+    z-index: 95;
+}
+
+.bgm-info-btn {
+    position: absolute;
+    right: -1rem;
+    top: 0;
+    width: 1rem;
+    height: 100%;
+    background-color: rgb(var(--bgm-bg-color));
+    border-left: solid rgba(0, 0, 0, 0.2) 1px;
+    clip-path: polygon(0 0%, 100% 1rem, 100% 100%, 0% 100%, 0% 0%);
+    cursor: pointer;
+}
+
+.bgm-info-btn::after {
+    content: '';
+    position: absolute;
+    right: -0.55rem;
+    top: 1rem;
+    width: 0.5rem;
+    height: 1rem;
+    border: 0.35rem dotted rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.bgm-play-btn {
+    aspect-ratio: 1/1;
+    background-color: rgb(var(--bgm-bg-color));
+    padding: 0.5rem;
+    width: 3rem;
+    border-right: solid rgba(0, 0, 0, 0.2) 1px;
+    cursor: pointer;
+}
+
+.bgm-info {
+    position: relative;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--color-base));
+    text-decoration: none;
+    text-align: center;
+    padding-inline: 0rem;
+    width: 0rem;
+    height: 3rem;
+    background-color: rgb(var(--bgm-bg-color));
+    box-shadow: inset 0.5rem 0 1rem -0.5rem rgb(var(--color-prim-dark)), inset -0.5rem 0 1rem -0.5rem rgb(var(--color-prim-dark));
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.bgm-redirect {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.bgm-redirect img {
+    height: 100%;
+}
+
+.bgm-info:hover .bgm-redirect {
+    opacity: 1;
+}
+
+.bgm-redirect:hover {
+    filter: brightness(0) saturate(100%) invert(58%) sepia(22%) saturate(1435%) hue-rotate(170deg) brightness(109%) contrast(98%);
+}
+
+.bgm-title {
+    position: relative;
+    left: -4rem;
+    width: 6rem;
+    margin-inline: 1rem;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    font-size: 1.2rem;
+    transition: all 0.5s ease;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.5);
+}
+
+.bgm-artist {
+    position: relative;
+    left: -4rem;
+    width: 8rem;
+    font-size: 0.8rem;
+    transition: all 0.5s ease;
+}
+
+.info-opened .bgm-info{
+    width: 8rem;
+    padding-inline: 0.5rem;
+}
+
+.info-opened .bgm-title,
+.info-opened .bgm-artist {
+    left: 0;
+}
+
+.bgm-play-btn img {
+    width: 100%;
+    filter: drop-shadow(0 0 0.5rem rgb(var(--color-prim-light)));
+    animation: spining 5s linear infinite;
+    animation-play-state: paused;
+}
+
+.bgm-play .bgm-play-btn img{
+    animation-play-state: running;
+}
+
+@keyframes spining {
+    0% {
+        rotate: 0deg;
+    }
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.bgm-progress-wrapper {
+    position: absolute;
+    left: 4rem;
+    bottom: 0;
+    width: calc(100vw - 4rem);
+    z-index: -2;
+}
+
+.bgm-progress-bar {
+    display: flex;
+    position: relative;
+    width: 0;
+    height: 1rem;
+}
+
+.bgm-progress-bar::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.4rem;
+    height: 0.1rem;
+    width: 100%;
+    background-image: linear-gradient(to left, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+    pointer-events: none;
+    z-index: -1;
+}
+
+.bgm-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    height: 0.5rem;
+    width: 2rem;
+    border-radius: 100% 0 0 100% / 30% 0 0 30%; 
+    clip-path: polygon(100% 0%, 100% 100%, 0 80%, 0% 20%);
+    background-image: linear-gradient(to left, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+    transition: width 1s ease-in-out;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.bgm-play .bgm-progress-bar::after {
+    animation: blink 1s ease-in-out infinite alternate;
+    /* transition-delay: 0.25s; */
+    width: 10rem;
+}
+
+@keyframes blink {
+    0% {opacity: 1}
+    10% {opacity: 0.8}
+    80% {opacity: 0.9}
+    100% {opacity: 0.7}
+}
+
+.bgm-progress-bar img {
+    position: absolute;
+    right: -5px;
+    bottom: -0.95rem;
+    width: 3rem;
+    rotate: 45deg;
+    transition: scale 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.bgm-progress-bar img:nth-child(2) {
+    opacity: 0;
+    /* scale: 0; */
+    transition: all 1s ease-out;
+}
+.bgm-play .bgm-progress-bar img:nth-child(2) {
+    /* scale: 1; */
+    opacity: 1;
+}
+
+/* ======================================= */
+/* =               Clock                 = */
+/* ======================================= */
+
+.clock {
+    aspect-ratio: 1 / 1;
+    width: min(50vw, 420px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 2s ease-in;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+    pointer-events: none;
+    user-select: none;
+}
+
+.outer-clock-face {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+  
+.outer-clock-face img {
+    width: 100%;
+    /* opacity: 0.5; */
+}
+
+.inner-clock-face {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    /* opacity: 0.8; */
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    z-index: 1;
+}
+  
+.inner-clock-face::before {
+    content: '';
+    position: absolute;
+    width: 4%;
+    height: 4%;
+    border-radius: 18px;
+    background: #95781f;
+    z-index: 11;
+}
+
+.hand {
+    aspect-ratio: 1 / 6;
+    position: absolute;
+    height: 100%;
+    transform-origin: center;
+    transform: rotate(90deg);
+    transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    filter: drop-shadow(0 0 2px black);
+}
+  
+.hand img {
+    aspect-ratio: 1 / 6;
+    height: 100%;
+    position: absolute;
+}
+  
+.about {
+    position: relative;
+    background-color: rgb(var(--color-base));
+    margin-top: 15vh;
+    z-index: 1;
+}
+
+.about::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 15vh;
+    translate: 0 -15vh;
+    background-image: url('../img/cosmicWind.svg');
+    background-size: contain;
+    background-position: bottom;
+    background-repeat: repeat-x;
+    filter: drop-shadow(0 0 2rem rgba(var(--color-accent), 0.3));
+    z-index: -2;
+}
+
+.about .container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 5rem;
+    width: 100vw;
+    background-color: rgb(var(--color-base));
+    z-index: -1;
+}
+
+.about-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 50%;
+}
+
+.about-img img {
+    height: 100%;
+}
