@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+@font-face {
+    font-family: 'Android Assasins';
+    src: url(../misc/fonts/android-assassin-font/AndroidAssassin-grz1.ttf) format("truetype");
+}
+@font-face {
+    font-family: 'Metropolis';
+    src: url(../misc/fonts/metropolis-font/MetropolisPersonalUseRegular-nR5LY.ttf) format("truetype");
+}
+@font-face {
+    font-family: 'Cherotta';
+    src: url(../misc/fonts/cerotta-only-font/CerottaPersonalUseOnly-0vW5d.otf) format("truetype");
+}
+@font-face {
+    font-family: 'Lilliput Steps';
+    src: url(../misc/fonts/lilliput-steps/Lilliput\ Steps.otf) format("truetype");
+}

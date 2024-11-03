@@ -48,6 +48,7 @@ function enableScroll() {
 // Preload
 var clock = document.querySelector(".clock");
 var bgmPlayer = document.querySelector(".bgm-player");
+let iterationsLimit = 1;
 
 document.addEventListener('DOMContentLoaded', () => {
   const preloader = document.querySelector('#preloader');
@@ -86,15 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
     logo.classList.add("loaded");
     logo.nextElementSibling.style.opacity = "1";
     window.scrollTo(0, 0);
-    animateLogo();
-    setInterval(animateLogo, 8000);
+    setTimeout(()=> {animateLogo()}, 300);
     preloader.addEventListener('click', () => {
       createMeteorShower(46);
       window.scrollTo(0, 0);
       preloader.style.pointerEvents = "none";
-      // bgmPlay();
+      bgmPlay();
       preloader.style.scale = "1.5";
       preloader.style.opacity = "0";
+      iterationsLimit = 0;
       animateLogo();
       setTimeout(function() {
         preloader.style.display = "none";
@@ -167,117 +168,53 @@ setInterval(setDate, 1000);
 
 setDate();
 
-// Random #1
+// Glitch effect
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const logo = document.querySelector("#logo");
+let glitchInterval;
 
 function animateLogo() {
-  const logo = document.querySelector("#logo");
+  clearInterval(glitchInterval);
+
   let iterations = 0;
   const interval = setInterval(() => {
     logo.innerText = logo.innerText.split("")
     .map((letter, index) => {
       if (index < iterations) {
-          return logo.dataset.value[index];
-        }
-        
-        return letters[Math.floor(Math.random() * 26)];
-      })
-      .join("");
-      
-      logo.setAttribute("data-content", logo.innerText);
-      
-      if (iterations >= logo.dataset.value.length) clearInterval(interval);
-      
-      iterations += 1 / 3;
-      if (iterations < 7) {
-        logo.classList.add("glitch");
-      } else {
-        logo.classList.remove("glitch");
-    }
-  }, 50);
-}
-
-// Costum Scrollbar
-
-// JavaScript to control custom scrollbar
-const container = document.querySelector('body');
-const content = container.querySelector('.main-wrapper');
-const track = container.querySelector('.scrollbar-track');
-const thumb = track.querySelector('.scrollbar-thumb');
-
-// Update thumb height based on content and container heights
-function updateThumb() {
-    const contentHeight = content.scrollHeight;
-    const containerHeight = container.clientHeight;
-    const scrollableHeight = contentHeight - containerHeight;
-
-    if (scrollableHeight > 0) {
-        const thumbHeight = Math.max(containerHeight / contentHeight * containerHeight, 30);
-        thumb.style.height = thumbHeight + 'px';
-        thumb.style.display = 'block';
-    } else {
-        thumb.style.display = 'none';
-    }
-}
-
-// Update thumb position based on scroll
-function updateThumbPosition() {
-    const scrollOffset = content.scrollTop;
-    const contentHeight = content.scrollHeight;
-    const containerHeight = container.clientHeight;
-    const scrollableHeight = contentHeight - containerHeight;
-    const trackHeight = track.clientHeight;
-
-    if (scrollableHeight > 0) {
-        const thumbPosition = scrollOffset / scrollableHeight * (trackHeight - thumb.clientHeight);
-        thumb.style.top = thumbPosition + 'px';
-    }
-}
-
-// Handle thumb dragging
-function onThumbMouseDown(event) {
-    event.preventDefault();
-    const startY = event.clientY;
-    const startTop = parseFloat(thumb.style.top) || 0;
-
-    function onMouseMove(event) {
-        const deltaY = event.clientY - startY;
-        const newTop = Math.min(track.clientHeight - thumb.clientHeight, Math.max(0, startTop + deltaY));
-        thumb.style.top = newTop + 'px';
-        thumb.classList.add("active");
-        
-        // Scroll content proportionally
-        const scrollFraction = newTop / (track.clientHeight - thumb.clientHeight);
-        content.scrollTop = scrollFraction * (content.scrollHeight - container.clientHeight);
+        return logo.dataset.value[index];
       }
       
-      function onMouseUp() {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-        thumb.classList.remove("active");
+      return letters[Math.floor(Math.random() * 26)];
+    })
+    .join("");
+    
+    logo.setAttribute("data-content", logo.innerText);
+    
+    if (iterations >= logo.dataset.value.length) clearInterval(interval);
+    
+    if (iterationsLimit == 1) iterations += 1 / 3;
+    else iterations = 0;
+    if (iterations < 7) {
+      logo.classList.add("glitch");
+    } else {
+      logo.classList.remove("glitch");
     }
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+  }, 50);
+  startGlitchInterval()
 }
 
-// Add event listeners
-content.addEventListener('scroll', updateThumbPosition);
-window.addEventListener('resize', () => {
-    updateThumb();
-    updateThumbPosition();
-});
+//Replay glitch
 
-thumb.addEventListener('mousedown', onThumbMouseDown);
-
-// Initial setup
-updateThumb();
-updateThumbPosition();
-
-function scrollSeek(event) {
-  if (event.srcElement == thumb) {
-  } else {
-    const scrollFraction = (event.offsetY / event.target.clientHeight);
-    content.scrollTop = scrollFraction * (content.scrollHeight - container.clientHeight);
-  }
+function startGlitchInterval() {
+  glitchInterval = setInterval(() => {
+    animateLogo()
+  }, 8000);
 }
+
+logo.addEventListener('mouseover', ()=> {
+  iterationsLimit = 0;
+  animateLogo()
+})
+logo.addEventListener('mouseleave', ()=> {
+  iterationsLimit = 1;
+})

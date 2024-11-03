@@ -1,149 +1,185 @@
-const canvas = document.getElementById('starryNight');
-const ctx = canvas.getContext('2d');
+const canvas2D = document.getElementById('cometNight');
+const ctx2D = canvas2D.getContext('2d');
+
+const canvasWebGL = document.getElementById('starryNight');
+const gl = canvasWebGL.getContext('webgl');
 
 const stars = [];
 let starsCount = 816;
 const comets = [];
+let lastTime = 0;
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    starsCount = Math.floor((816*0.2) + (canvas.width + canvas.height)*0.3 - 16);
+    canvas2D.width = window.innerWidth;
+    canvas2D.height = window.innerHeight;
+    canvasWebGL.width = window.innerWidth;
+    canvasWebGL.height = window.innerHeight;
+
+    starsCount = Math.floor((816 * 0.15) + (canvas2D.width + canvas2D.height) * 0.2 - 35*(1080/canvas2D.width));
+    
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     stars.length = 0;
-    init();
+    initStars();
 }
 
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Base direction in which all stars will move
-const baseDx = 0.015;
-const baseDy = 0;
+const cometCooldown = 30000;
+let lastCometTime = 0;
+const meteorShowerCooldown = 300000;
+let lastMeteorShowerTime = Date.now();
 
-const now = Date.now();
-const cometCooldown = 30000; // 1 minute in milliseconds
-let lastCometTime = 0; // Timestamp of the last comet creation
-const meteorShowerCooldown = 300000; // 5 minutes in milliseconds
-let lastMeteorShowerTime = now; // Timestamp of the last meteor shower
+const vertexShaderSource = `
+    attribute vec2 a_position;
+    attribute float a_size;
+    varying float v_size;
+    varying float v_alpha; // Pass alpha to the fragment shader
+    void main() {
+        gl_Position = vec4(a_position, 0, 1);
+        gl_PointSize = a_size;
+        v_alpha = a_size; // Use size as a proxy for alpha
+    }
+`;
 
-function Star(x, y, radius, alpha, velocity, blinkSpeed) {
-    this.x = x;
-    this.y = y;
-    this.initialRadius = radius;
-    this.radius = radius;
-    this.alpha = alpha;
-    this.velocity = velocity;
-    this.blinkSpeed = blinkSpeed;
-    this.blinkOffset = Math.random() * Math.PI * 2; // Randomize the blinking phase
+const fragmentShaderSource = `
+    precision mediump float;
+    varying float v_alpha;
+    void main() {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, v_alpha); // White color for stars with alpha
+    }
+`;
+
+function compileShader(source, type) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        return shader;
+    } else {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+    }
 }
 
-Star.prototype.draw = function() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-    ctx.fill();
-};
+function createProgram() {
+    const vertexShader = compileShader(vertexShaderSource, gl.VERTEX_SHADER);
+    const fragmentShader = compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    return program;
+}
 
-Star.prototype.update = function() {
-    this.x += baseDx * this.velocity;
-    this.y += baseDy * this.velocity;
+const program = createProgram();
 
-    // If the star moves out of the canvas, reposition it to the opposite side
-    if (this.x < 0) this.x = canvas.width;
-    if (this.x > canvas.width) this.x = 0;
-    if (this.y < 0) this.y = canvas.height;
-    if (this.y > canvas.height) this.y = 0;
-
-    // Update the star's radius to create a blinking effect
-    this.radius = this.initialRadius + Math.sin(Date.now() * this.blinkSpeed + this.blinkOffset) * this.initialRadius * 0.5;
-
-    this.draw();
-};
-
-function Comet(x, y, radius, speed, length) {
+function Star(x, y, radius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
-    this.speed = speed;
-    this.length = length;
-    this.trail = [];
+    this.alpha = Math.random();
+}
+
+function initStars() {
+    for (let i = 0; i < starsCount; i++) {
+        const x = Math.random() * canvasWebGL.width;
+        const y = Math.random() * canvasWebGL.height;
+        const radius = Math.random() * 2.5;
+        stars.push(new Star(x, y, radius));
+    }
+}
+
+function drawStars() {
+    for (const star of stars) {
+        star.alpha = Math.abs(Math.sin(Date.now() / 5000 + star.x));
+    }
+
+    const positions = new Float32Array(stars.map(star => [
+        (star.x / canvasWebGL.width) * 2 - 1,
+        (star.y / canvasWebGL.height) * -2 + 1
+    ]).flat());
+
+    const sizes = new Float32Array(stars.map(star => star.radius * star.alpha));
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+    const sizeBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, sizes, gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, "a_position");
+    const sizeLocation = gl.getAttribLocation(program, "a_size");
+
+    gl.enableVertexAttribArray(positionLocation);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    gl.enableVertexAttribArray(sizeLocation);
+    gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuffer);
+    gl.vertexAttribPointer(sizeLocation, 1, gl.FLOAT, false, 0, 0);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, stars.length);
+}
+
+function Comet(x, y, radius) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.alpha = 0;
+    this.speed = 60;
+    this.fadeInDuration = 250;
+    this.startTime = Date.now();
+
+    this.direction = {
+        dx: 20,
+        dy: 8
+    };
 }
 
 Comet.prototype.draw = function() {
-    for (let i = 0; i < this.trail.length; i++) {
-        const trailSegment = this.trail[i];
-        // Interpolate color from blue-white (115, 185, 255) to light blue (173, 216, 230)
-        const r = 195 + (0 - 195) * (1 - trailSegment.alpha);
-        const g = 225 + (0 - 225) * (1 - trailSegment.alpha);
-        const b = 255 + (255 - 255) * (1 - trailSegment.alpha);
-        ctx.beginPath();
-        ctx.arc(trailSegment.x, trailSegment.y, trailSegment.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${trailSegment.alpha})`;
-        ctx.fill();
-    }
-
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius + 1, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(225, 225, 255, 1)';
-    ctx.fill();
-};
-
-Comet.prototype.update = function() {
-    const prevX = this.x;
-    const prevY = this.y;
-
-    this.x += this.speed.dx;
-    this.y += this.speed.dy;
-
-    const segmentsToAdd = 4; // Number of segments to add for smoother trail
-    for (let i = 1; i <= segmentsToAdd; i++) {
-        const interpolatedX = prevX + (this.x - prevX) * (i / segmentsToAdd);
-        const interpolatedY = prevY + (this.y - prevY) * (i / segmentsToAdd);
-        this.trail.push({ x: interpolatedX, y: interpolatedY, radius: this.radius, alpha: 1 });
-    }
+    const angle = Math.atan2(this.direction.dy, this.direction.dx);
+    const cometTailX = this.x - Math.cos(angle) * (Math.random(50) + 150);
+    const cometTailY = this.y - Math.sin(angle) * (Math.random(50) + 150);
     
-    if (this.trail.length > this.length) {
-        this.trail.splice(0, this.trail.length - this.length); // Remove the oldest segments to maintain trail length
-    }
-
+    const gradient = ctx2D.createLinearGradient(this.x, this.y, cometTailX, cometTailY);
+    gradient.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`);
+    gradient.addColorStop(1, `rgba(122, 169, 237, 0)`);
     
-    for (let i = 0; i < this.trail.length; i++) {
-        this.trail[i].alpha -= 1 / this.length; // Adjust alpha based on total length
-        this.trail[i].radius *= 0.9; // Decrease radius to create a tapering effect
-    }
-
-    this.draw();
+    ctx2D.beginPath();
+    ctx2D.arc(this.x, this.y, this.radius / 2, 0, Math.PI * 2);
+    ctx2D.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+    ctx2D.fill();
+    
+    ctx2D.moveTo(this.x, this.y);
+    ctx2D.lineTo(cometTailX, cometTailY);
+    ctx2D.strokeStyle = gradient;
+    ctx2D.lineWidth = this.radius;
+    ctx2D.stroke();
 };
 
+Comet.prototype.update = function(deltaTime) {
+    const distance = this.speed * (deltaTime / 1000);
+    this.x += this.direction.dx * distance;
+    this.y += this.direction.dy * distance;
 
-Comet.prototype.reset = function() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.trail = [];
-};
-
-function init() {
-    for (let i = 0; i < starsCount; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const radius = Math.random() * 1.5;
-        const alpha = Math.random();
-        const velocity = radius + Math.random() * 0.5; // Larger radius means higher velocity, with some randomness
-        const blinkSpeed = Math.random() * 0.001 + 0.0005; // Random blink speed
-        stars.push(new Star(x, y, radius, alpha, velocity, blinkSpeed));
+    const elapsedTime = Date.now() - this.startTime;
+    if (elapsedTime < this.fadeInDuration) {
+        this.alpha = (elapsedTime / this.fadeInDuration);
+    } else {
+        this.alpha = 1;
     }
-}
+};
 
 function createRandomComet() {
-    const x = Math.random() * canvas.width - 20;
-    const y = Math.random() * canvas.height - 5 ;
-    const radius = Math.random() * 2 + 1; // Random size for the comet
-    const speed = {
-        dx: 16, // Horizontal speed
-        dy: 4 // Vertical speed
-    };
-    const length = Math.random() * 20 + 20; // Random trail length
-    comets.push(new Comet(x, y, radius, speed, length));
+    const x = Math.random() * canvas2D.width;
+    const y = Math.random() * canvas2D.height;
+    const radius = Math.random() * 2 + 2;
+    comets.push(new Comet(x, y, radius));
 }
 
 function createMeteorShower(meteor) {
@@ -155,29 +191,33 @@ function createMeteorShower(meteor) {
     }
 }
 
-function animate() {
+function animate(timestamp) {
     requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (lastTime) {
+        const deltaTime = timestamp - lastTime;
+        ctx2D.clearRect(0, 0, canvas2D.width, canvas2D.height);
 
-    stars.forEach(star => star.update());
+        drawStars();
 
-    comets.forEach((comet, index) => {
-        comet.update();
-        if (comet.x < -200 || comet.x > canvas.width + 200 || comet.y < -200 || comet.y > canvas.height + 200) {
-            comets.splice(index, 1);
-        }
-    });
-    
-    const now = Date.now();
+        comets.forEach((comet, index) => {
+            comet.update(deltaTime);
+            comet.draw();
 
-    if (now - lastCometTime > cometCooldown) {
+            if (comet.x < 0 || comet.x > canvas2D.width || comet.y < 0 || comet.y > canvas2D.height) {
+                comets.splice(index, 1);
+            }
+        });
+    }
+    lastTime = timestamp;
+
+    if (Date.now() - lastCometTime > cometCooldown) {
         createRandomComet();
-        lastCometTime = now;
+        lastCometTime = Date.now();
     }
 
-    if (now - lastMeteorShowerTime > meteorShowerCooldown) {
-        createMeteorShower(10);
-        lastMeteorShowerTime = now;
+    if (Date.now() - lastMeteorShowerTime > meteorShowerCooldown) {
+        createMeteorShower(3);
+        lastMeteorShowerTime = Date.now();
     }
 }
 
@@ -188,19 +228,13 @@ window.addEventListener('click', function(event) {
     const currentTime = Date.now();
     if (currentTime - lastClickTime >= cooldown) {
         lastClickTime = currentTime;
-        
+
         const x = event.x - 150 - (50 * Math.random());
         const y = event.y - 25 - (25 * Math.random());
-        const radius = Math.random() * 2 + 1;
-        const speed = {
-            dx: 16,
-            dy: 4 + Math.random() * 4
-        };
-        const length = Math.random() * 20 + 15;
-        comets.push(new Comet(x, y, radius, speed, length));
+        const radius = Math.random() * 2 + 2;
+        comets.push(new Comet(x, y, radius));
     }
 });
 
-
-init();
+initStars();
 animate();

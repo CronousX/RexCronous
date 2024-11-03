@@ -1,19 +1,7 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
-    /* Color Palette */
-    --color-special: 92, 0, 184; 
-    --color-prim-dark: 18, 18, 84;
-    --color-prim: 25, 25, 112;
-    --color-prim-light: 40, 40, 184;
-    --color-accent: 245, 208, 0;
-    --color-accent-light: 255, 237, 133;
-    --color-base: 255, 249, 214;
 }
 
 /* Disable Scrollbar */
@@ -40,46 +28,16 @@ body {
     opacity: 0;
     transition: opacity 0.5s ease-in;
     height: 100vh;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden;
 }
 
 .container {
+    position: relative;
     display: flex;
     justify-content: center;
     width: min(100% - 15px, 840px);
     height: 100%;
     margin-inline: auto;
-}
-
-/* ======================================= */
-/* =          Custom Scrollbar           = */
-/* ======================================= */
-
-.scrollbar-track {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0.75rem;
-    height: 100%;
-    border-radius: 5px;
-    z-index: 99;
-}
-
-.scrollbar-thumb {
-    position: relative;
-    width: 50%;
-    margin: auto;
-    background-color: rgba(var(--color-accent), 0.2);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: width 0.25s ease, background-color 0.25s ease;
-}
-
-.scrollbar-thumb.active,
-.scrollbar-thumb:hover {
-    width: 100%;
-    background-color: rgba(var(--color-accent), 0.8);
 }
 
 /* ======================================= */
@@ -106,23 +64,38 @@ body {
 
 .loaded-info {
     position: relative;
+    top: -10%;
     width: 80vw;
+    height: 0;
     color: rgb(var(--color-base));
     text-align: center;
     letter-spacing: 5px;
-    font-family: 'Secular One', sans-serif;
     opacity: 0;
-    transition: all 1s ease-in;
+    transition: opacity 1s ease-in;
+}
+
+.loaded-info h1 {
+    font-size: 3rem;
+    font-family: 'Android Assasins', sans-serif;
+    font-weight: lighter;
+    color: rgb(var(--color-accent));
+}
+
+.loaded-info h3 {
+    font-size: 1rem;
+    font-family: 'Cherotta', serif;
 }
 
 .loaded-info h5 {
     text-align: center;
+    text-transform: uppercase;
+    font-family: 'Lilliput Steps', sans-serif;
     color: rgba(128, 128, 128, 0.8);
     animation: Blinks 1s linear infinite alternate;
 }
 
 .loaded {
-    margin-bottom: 5%;
+    margin-bottom: calc(10vh + 1rem);
 }
 
 .logo {
@@ -138,7 +111,6 @@ body {
 .logo img {
     aspect-ratio: 1 / 1;
     width: 100%;
-    filter: drop-shadow(-1px -1px 1px #ffdc73);
     border-radius: 100%;
     z-index: 1;
     -webkit-user-drag: none;
@@ -189,7 +161,6 @@ body {
 
 #logo:before,
 #logo:after {
-    display: block;
     content: attr(data-content);
     position: absolute;
     opacity: 0.8;
@@ -197,13 +168,15 @@ body {
  
 .glitch:before {
     animation: glitch-color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-    color: var(--color-prim-light);
+    color: rgba(var(--color-prim-), 0.8);
+    color: #FEAA0A;
     z-index: -1;
 }
  
 .glitch:after {
     animation: glitch-color 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-    color: var(--color-accent);
+    color: rgba(var(--color-special), 0.8);
+    color: #820AFE;
     z-index: -2;
 }
  
@@ -213,19 +186,19 @@ body {
     }
  
     20% {
-       transform: translate(-3px, 3px);
+       transform: translate(-0.25rem, 0.25rem);
     }
  
     40% {
-       transform: translate(-3px, -3px);
+       transform: translate(-0.25rem, -0.25rem);
     }
  
     60% {
-       transform: translate(3px, 3px);
+       transform: translate(0.25rem, 0.25rem);
     }
  
     80% {
-       transform: translate(3px, -3px);
+       transform: translate(0.25rem, -0.25rem);
     }
  
     to {
@@ -255,6 +228,12 @@ body {
     pointer-events: none;
     animation: galaxyNoise 180s linear 0s infinite;   
     opacity: 0.5;
+}
+
+.starrySky canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 @keyframes galaxyNoise {
@@ -433,6 +412,7 @@ body {
     position: relative;
     width: 0;
     height: 1rem;
+    pointer-events: none;
 }
 
 .bgm-progress-bar::before {
@@ -549,7 +529,7 @@ body {
     width: 4%;
     height: 4%;
     border-radius: 18px;
-    background: #95781f;
+    background: rgb(var(--color-accent));
     z-index: 11;
 }
 
@@ -568,48 +548,68 @@ body {
     height: 100%;
     position: absolute;
 }
-  
+
+/* ======================================= */
+/* =               About                 = */
+/* ======================================= */
+
 .about {
+    display: flex;
+    justify-content: space-between;
     position: relative;
-    background-color: rgb(var(--color-base));
-    margin-top: 15vh;
+    height: 100vh;
     z-index: 1;
+    /* font-family: 'Metropolis', serif; */
 }
 
-.about::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 15vh;
-    translate: 0 -15vh;
-    background-image: url('../img/cosmicWind.svg');
-    background-size: contain;
-    background-position: bottom;
-    background-repeat: repeat-x;
-    filter: drop-shadow(0 0 2rem rgba(var(--color-accent), 0.3));
-    z-index: -2;
+.item-left,
+.item-right {
+    /* border: var(--item-color) solid 0.5rem; */
+    width: calc(50vw - (min(50vw, 420px))/2);
 }
 
-.about .container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 5rem;
-    width: 100vw;
-    background-color: rgb(var(--color-base));
-    z-index: -1;
+.item-left {
+    --item-color: red;
+}
+.item-right {
+    --item-color: blue;
 }
 
-.about-img {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 50%;
+.about-info {
+    width: 13rem;
+    height: fit-content;
+    margin: auto;
+    margin-inline: unset;
+    color: rgb(var(--color-base));
 }
 
-.about-img img {
-    height: 100%;
+.about-info h1 {
+    width: 100%;
+    font-size: 2rem;
+    font-family: 'Android Assasins', sans-serif;
+    font-weight: lighter;
+    color: rgb(var(--color-accent));
+    letter-spacing: 0.2rem;
+}
+
+.about-info h3 {
+    font-size: 1rem;
+    font-family: 'Cherotta', serif;
+    letter-spacing: 0.1rem;
+    white-space: nowrap;
+    filter: brightness(2.5);
+    color: rgb(var(--color-prim-light));
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 840px) {
+    .about {
+        flex-direction: column;
+    }
+
+    .item-left,
+    .item-right {
+        width: 100vw;
+        height: calc(50vh - (min(50vw, 420px))/2);
+    }
 }

@@ -1,0 +1,43 @@
+* {
+    --color-special: 84, 36, 160;
+    --color-preview: rgb(84, 36, 160);
+    --color-prim-dark: 18, 18, 84;
+    --color-preview: rgb(18, 18, 84);
+    --color-prim: 25, 25, 112;
+    --color-preview: rgb(25, 25, 112);
+    --color-prim-light: 40, 40, 184;
+    --color-preview: rgb(40, 40, 184);
+    --color-accent: 254, 170, 10;
+    --color-preview: rgb(254, 170, 10);
+    --color-base: 255, 249, 214;
+    --color-preview: rgb(255, 249, 214);
+
+    /* Sui-Chan */
+    --color-preview: rgb(25, 28, 33);
+    --color-preview: rgb(51, 49, 133);
+    --color-preview: rgb(122, 169, 237);
+    --color-preview: rgb(244, 194, 170);
+    --color-preview: rgb(253, 254, 255);
+}
+
+.centerPoints {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f4433600;
+    position: absolute;
+}
+
+.centerPoint {
+    --border-width: 0.2rem;
+    position: absolute;
+    width: 50vw;
+    height: 50vh;
+    border: var(--border-width) solid greenyellow;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.centerPoint:nth-child(1) {
+    top: 50%;
+    left: 50%;
+}
